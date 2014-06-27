@@ -1,10 +1,37 @@
-App = Ember.Application.create();
+App = Ember.Application.create(
+	//{
+		//socket: window.io.connect('http://localhost');
+		/*socket.on('connection', function(data){                                                                               
+      		//self.store.push(data.type, data.item);
+      		console.log('Socket connected');                                                                             
+    	});*/
+	//}
+	);
+
+App.ApplicationRoute = Ember.Route.extend({                                                              
+  activate: function() {
+  	console.log('Ember active is called');               
+    // connect to the websocket once we enter the application route                                                                   
+    var socket = window.io.connect('http://localhost');                                                           
+
+    var self = this;                                                                                                   
+
+    socket.on('message', function(data){                                                                               
+      //self.store.push(data.type, data.item);                                                                              
+    });
+    socket.on('connection', function(data){                                                                               
+      //self.store.push(data.type, data.item);
+      console.log('Socket connected');                                                                             
+    });                                                                                                                   
+  }
+});
 
 App.Router.map(function(){
 	this.resource('about');
 	this.resource('posts', function(){
 		this.resource('post', { path: ':post_id'});
 	});
+	//this.resource('app');
 });
 
 App.PostsRoute = Ember.Route.extend({
